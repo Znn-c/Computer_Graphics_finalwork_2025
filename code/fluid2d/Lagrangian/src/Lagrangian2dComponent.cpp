@@ -1,6 +1,6 @@
 /**
- * Lagrangian2dComponent.cpp: 2DÀ­¸ñÀÊÈÕÁ÷Ìå×é¼þÊµÏÖÎÄ¼þ
- * ÊµÏÖ×é¼þµÄ³õÊ¼»¯¡¢·ÂÕæºÍäÖÈ¾¹¦ÄÜ
+ * Lagrangian2dComponent.cpp: 2Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½Ä¼ï¿½
+ * Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½
  */
 
 #include "Lagrangian2dComponent.h"
@@ -10,7 +10,7 @@ namespace FluidSimulation
     namespace Lagrangian2d
     {
         /**
-         * ¹Ø±Õ×é¼þ£¬ÊÍ·Å×ÊÔ´
+         * ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½Ô´
          */
         void Lagrangian2dComponent::shutDown()
         {
@@ -21,8 +21,8 @@ namespace FluidSimulation
         }
 
         /**
-         * ³õÊ¼»¯×é¼þ
-         * ´´½¨äÖÈ¾Æ÷¡¢Á£×ÓÏµÍ³ºÍÇó½âÆ÷
+         * ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½
+         * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
          */
         void Lagrangian2dComponent::init()
         {
@@ -42,10 +42,57 @@ namespace FluidSimulation
             ps = new ParticleSystem2d();
             ps->setContainerSize(glm::vec2(-1.0f, -1.0f), glm::vec2(1.0f, 1.0f));
 
-            // add a fluid block
+            auto isValidBlock = [](const Lagrangian2dPara::FluidBlock& b) {
+                if (!(b.upperCorner.x > b.lowerCorner.x && b.upperCorner.y > b.lowerCorner.y))
+                {
+                    return false;
+                }
+                if (!(b.particleSpace > 0.0f))
+                {
+                    return false;
+                }
+                return true;
+            };
+
+            auto defaultFountainBlock = []() {
+                Lagrangian2dPara::FluidBlock b;
+                b.lowerCorner = glm::vec2(-0.9f, -1.0f);
+                b.upperCorner = glm::vec2(0.9f, -0.6f);
+                b.initVel = glm::vec2(0.0f, 0.0f);
+                b.particleSpace = 0.02f;
+                return b;
+            };
+
+            bool hasValidBlock = false;
+            for (int i = 0; i < Lagrangian2dPara::fluidBlocks.size(); i++)
+            {
+                if (isValidBlock(Lagrangian2dPara::fluidBlocks[i]))
+                {
+                    hasValidBlock = true;
+                    break;
+                }
+            }
+            if (!hasValidBlock)
+            {
+                Lagrangian2dPara::fluidBlocks.clear();
+                Lagrangian2dPara::fluidBlocks.push_back(defaultFountainBlock());
+            }
+
             for (int i = 0; i < Lagrangian2dPara::fluidBlocks.size(); i++) {
-                ps->addFluidBlock(Lagrangian2dPara::fluidBlocks[i].lowerCorner, Lagrangian2dPara::fluidBlocks[i].upperCorner, 
+                if (!isValidBlock(Lagrangian2dPara::fluidBlocks[i]))
+                {
+                    continue;
+                }
+                ps->addFluidBlock(Lagrangian2dPara::fluidBlocks[i].lowerCorner, Lagrangian2dPara::fluidBlocks[i].upperCorner,
                     Lagrangian2dPara::fluidBlocks[i].initVel, Lagrangian2dPara::fluidBlocks[i].particleSpace);
+            }
+
+            if (ps->particles.empty())
+            {
+                Lagrangian2dPara::fluidBlocks.clear();
+                Lagrangian2dPara::fluidBlocks.push_back(defaultFountainBlock());
+                ps->addFluidBlock(Lagrangian2dPara::fluidBlocks[0].lowerCorner, Lagrangian2dPara::fluidBlocks[0].upperCorner,
+                    Lagrangian2dPara::fluidBlocks[0].initVel, Lagrangian2dPara::fluidBlocks[0].particleSpace);
             }
 
             ps->updateBlockInfo();

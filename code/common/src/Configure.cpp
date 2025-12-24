@@ -1,120 +1,120 @@
 #include "Configure.h"
 
-// ÏµÍ³ÅäÖÃ²ÎÊý
-int imageWidth = 600;       // äÖÈ¾·Ö±æÂÊ¿í¶È
-int imageHeight = 600;      // äÖÈ¾·Ö±æÂÊ¸ß¶È
+// ÏµÍ³ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½
+int imageWidth = 600;       // ï¿½ï¿½È¾ï¿½Ö±ï¿½ï¿½Ê¿ï¿½ï¿½ï¿½
+int imageHeight = 600;      // ï¿½ï¿½È¾ï¿½Ö±ï¿½ï¿½Ê¸ß¶ï¿½
 
-int windowWidth = 1080;     // ´°¿ÚÄ¬ÈÏ¿í¶È
-int windowHeight = 960;     // ´°¿ÚÄ¬ÈÏ¸ß¶È
+int windowWidth = 1080;     // ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï¿ï¿½ï¿½ï¿½
+int windowHeight = 960;     // ï¿½ï¿½ï¿½ï¿½Ä¬ï¿½Ï¸ß¶ï¿½
 
-float fontSize = 16.0f;     // ×ÖÌå´óÐ¡
+float fontSize = 16.0f;     // ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡
 
-bool simulating = false;    // Ä£Äâ×´Ì¬£¬ÓÃÓÚÇÐ»»ÔÝÍ£
+bool simulating = false;    // Ä£ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ï¿½ï¿½Í£
 
-// 2DÅ·À­·½·¨Ïà¹Ø²ÎÊý
+// 2DÅ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½
 namespace Eulerian2dPara
 {
-    // MACÍø¸ñ²ÎÊý
-    int theDim2d[2] = {100, 100};   // Íø¸ñÎ¬¶È
-    float theCellSize2d = 0.5;      // Íø¸ñµ¥Ôª´óÐ¡
+    // MACï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    int theDim2d[2] = {100, 100};   // ï¿½ï¿½ï¿½ï¿½Î¬ï¿½ï¿½
+    float theCellSize2d = 0.5;      // ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½Ð¡
     
-    // ÑÌÎíÔ´µÄÅäÖÃ²ÎÊý
+    // ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½
     std::vector<SourceSmoke> source = {
-        {   // Ô´µÄÎ»ÖÃ                      // ³õÊ¼ËÙ¶È           // ÃÜ¶È  // ÎÂ¶È
+        {   // Ô´ï¿½ï¿½Î»ï¿½ï¿½                      // ï¿½ï¿½Ê¼ï¿½Ù¶ï¿½           // ï¿½Ü¶ï¿½  // ï¿½Â¶ï¿½
             glm::ivec2(theDim2d[0] / 3, 0), glm::vec2(0.0f, 1.0f), 1.0f, 1.0f
         }
     };
 
-    bool addSolid = true;           // ÊÇ·ñÌí¼Ó¹ÌÌå±ß½ç
+    bool addSolid = true;           // ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½ß½ï¿½
 
-    // äÖÈ¾Æ÷ÉèÖÃ
-    float contrast = 1;             // ¶Ô±È¶È
-    int drawModel = 0;             // »æÖÆÄ£Ê½
-    int gridNum = theDim2d[0];     // Íø¸ñÊýÁ¿
+    // ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    float contrast = 1;             // ï¿½Ô±È¶ï¿½
+    int drawModel = 0;             // ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+    int gridNum = theDim2d[0];     // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-    // Çó½âÆ÷ÉèÖÃ
-    float dt = 0.01;               // Ê±¼ä²½³¤
-    float airDensity = 1.3;        // ¿ÕÆøÃÜ¶È
-    float ambientTemp = 0.0;       // »·¾³ÎÂ¶È
-    float boussinesqAlpha = 500.0; // BoussinesqÁ¦¹«Ê½ÖÐµÄalpha²ÎÊý
-    float boussinesqBeta = 2500.0; // BoussinesqÁ¦¹«Ê½ÖÐµÄbeta²ÎÊý
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    float dt = 0.01;               // Ê±ï¿½ä²½ï¿½ï¿½
+    float airDensity = 1.3;        // ï¿½ï¿½ï¿½ï¿½ï¿½Ü¶ï¿½
+    float ambientTemp = 0.0;       // ï¿½ï¿½ï¿½ï¿½ï¿½Â¶ï¿½
+    float boussinesqAlpha = 500.0; // Boussinesqï¿½ï¿½ï¿½ï¿½Ê½ï¿½Ðµï¿½alphaï¿½ï¿½ï¿½ï¿½
+    float boussinesqBeta = 2500.0; // Boussinesqï¿½ï¿½ï¿½ï¿½Ê½ï¿½Ðµï¿½betaï¿½ï¿½ï¿½ï¿½
 }
 
-// 3DÅ·À­·½·¨Ïà¹Ø²ÎÊý
+// 3DÅ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½
 namespace Eulerian3dPara
 {
-    // MACÍø¸ñ²ÎÊý
-    int theDim3d[3] = {12, 36, 36}; // Íø¸ñÎ¬¶È(È·±£ x <= y = z)
-    float theCellSize3d = 0.5;      // Íø¸ñµ¥Ôª´óÐ¡
+    // MACï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    int theDim3d[3] = {12, 36, 36}; // ï¿½ï¿½ï¿½ï¿½Î¬ï¿½ï¿½(È·ï¿½ï¿½ x <= y = z)
+    float theCellSize3d = 0.5;      // ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½Ð¡
     std::vector<SourceSmoke> source = {
         {glm::ivec3(theDim3d[0] / 2, theDim3d[1] / 2, 0), glm::vec3(0.0f, 0.0f, 1.0f), 1.0f, 1.0f}
     };
-    bool addSolid = true;           // ÊÇ·ñÌí¼Ó¹ÌÌå±ß½ç
+    bool addSolid = true;           // ï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ó¹ï¿½ï¿½ï¿½ß½ï¿½
 
-    // äÖÈ¾Æ÷ÉèÖÃ
-    float contrast = 1;             // ¶Ô±È¶È
-    bool oneSheet = true;           // ÊÇ·ñÖ»ÏÔÊ¾Ò»¸öÇÐÆ¬
-    float distanceX = 0.51;         // XÖáÇÐÆ¬Î»ÖÃ
-    float distanceY = 0.51;         // YÖáÇÐÆ¬Î»ÖÃ
-    float distanceZ = 0.985;        // ZÖáÇÐÆ¬Î»ÖÃ
-    bool xySheetsON = true;         // ÊÇ·ñÏÔÊ¾XYÆ½ÃæÇÐÆ¬
-    bool yzSheetsON = true;         // ÊÇ·ñÏÔÊ¾YZÆ½ÃæÇÐÆ¬
-    bool xzSheetsON = true;         // ÊÇ·ñÏÔÊ¾XZÆ½ÃæÇÐÆ¬
-    int drawModel = 0;              // »æÖÆÄ£Ê½
-    int gridNumX = (int)((float)theDim3d[0] / theDim3d[2] * 100);  // XÖáÍø¸ñÊý
-    int gridNumY = (int)((float)theDim3d[1] / theDim3d[2] * 100);  // YÖáÍø¸ñÊý
-    int gridNumZ = 100;             // ZÖáÍø¸ñÊý
-    int xySheetsNum = 3;            // XYÆ½ÃæÇÐÆ¬ÊýÁ¿
-    int yzSheetsNum = 3;            // YZÆ½ÃæÇÐÆ¬ÊýÁ¿
-    int xzSheetsNum = 3;            // XZÆ½ÃæÇÐÆ¬ÊýÁ¿
+    // ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    float contrast = 1;             // ï¿½Ô±È¶ï¿½
+    bool oneSheet = true;           // ï¿½Ç·ï¿½Ö»ï¿½ï¿½Ê¾Ò»ï¿½ï¿½ï¿½ï¿½Æ¬
+    float distanceX = 0.51;         // Xï¿½ï¿½ï¿½ï¿½Æ¬Î»ï¿½ï¿½
+    float distanceY = 0.51;         // Yï¿½ï¿½ï¿½ï¿½Æ¬Î»ï¿½ï¿½
+    float distanceZ = 0.985;        // Zï¿½ï¿½ï¿½ï¿½Æ¬Î»ï¿½ï¿½
+    bool xySheetsON = true;         // ï¿½Ç·ï¿½ï¿½ï¿½Ê¾XYÆ½ï¿½ï¿½ï¿½ï¿½Æ¬
+    bool yzSheetsON = true;         // ï¿½Ç·ï¿½ï¿½ï¿½Ê¾YZÆ½ï¿½ï¿½ï¿½ï¿½Æ¬
+    bool xzSheetsON = true;         // ï¿½Ç·ï¿½ï¿½ï¿½Ê¾XZÆ½ï¿½ï¿½ï¿½ï¿½Æ¬
+    int drawModel = 0;              // ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+    int gridNumX = (int)((float)theDim3d[0] / theDim3d[2] * 100);  // Xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    int gridNumY = (int)((float)theDim3d[1] / theDim3d[2] * 100);  // Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    int gridNumZ = 100;             // Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    int xySheetsNum = 3;            // XYÆ½ï¿½ï¿½ï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½
+    int yzSheetsNum = 3;            // YZÆ½ï¿½ï¿½ï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½
+    int xzSheetsNum = 3;            // XZÆ½ï¿½ï¿½ï¿½ï¿½Æ¬ï¿½ï¿½ï¿½ï¿½
 
-    // Çó½âÆ÷ÉèÖÃ
-    float dt = 0.01;                // Ê±¼ä²½³¤
-    float airDensity = 1.3;         // ¿ÕÆøÃÜ¶È
-    float ambientTemp = 0.0;        // »·¾³ÎÂ¶È
-    float boussinesqAlpha = 500.0;  // BoussinesqÁ¦¹«Ê½ÖÐµÄalpha²ÎÊý
-    float boussinesqBeta = 2500.0;  // BoussinesqÁ¦¹«Ê½ÖÐµÄbeta²ÎÊý
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    float dt = 0.01;                // Ê±ï¿½ä²½ï¿½ï¿½
+    float airDensity = 1.3;         // ï¿½ï¿½ï¿½ï¿½ï¿½Ü¶ï¿½
+    float ambientTemp = 0.0;        // ï¿½ï¿½ï¿½ï¿½ï¿½Â¶ï¿½
+    float boussinesqAlpha = 500.0;  // Boussinesqï¿½ï¿½ï¿½ï¿½Ê½ï¿½Ðµï¿½alphaï¿½ï¿½ï¿½ï¿½
+    float boussinesqBeta = 2500.0;  // Boussinesqï¿½ï¿½ï¿½ï¿½Ê½ï¿½Ðµï¿½betaï¿½ï¿½ï¿½ï¿½
 }
 
-// 2DÀ­¸ñÀÊÈÕ·½·¨Ïà¹Ø²ÎÊý
+// 2Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½
 namespace Lagrangian2dPara
 {
-    // Ëõ·ÅÏµÊý
+    // ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
     float scale = 2;
 
-    // Á÷Ìå¿é³õÊ¼ÅäÖÃ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
     std::vector<FluidBlock> fluidBlocks = {
-        {   // ×óÏÂ½Ç×ø±ê             // ÓÒÉÏ½Ç×ø±ê           // ³õÊ¼ËÙ¶È              // Á£×Ó¼ä¾à
-            glm::vec2(-0.4f, -0.4f), glm::vec2(0.4f, 0.4f), glm::vec2(0.0f, 0.0f), 0.02f
+        {   // ï¿½ï¿½ï¿½Â½ï¿½ï¿½ï¿½ï¿½ï¿½              // ï¿½ï¿½ï¿½Ï½ï¿½ï¿½ï¿½ï¿½ï¿½              // ï¿½ï¿½Ê¼ï¿½Ù¶ï¿½               // ï¿½ï¿½ï¿½Ó¼ï¿½ï¿½
+            glm::vec2(-0.9f, -1.0f), glm::vec2(0.9f, -0.6f), glm::vec2(0.0f, 0.0f), 0.02f
         }
     };
 
-    // Çó½âÆ÷ÉèÖÃ
-    float dt = 0.0016;              // Ê±¼ä²½³¤
-    int substep = 1;                // ×Ó²½Êý
-    float maxVelocity = 10;         // ×î´óÔÊÐíËÙ¶È
-    float velocityAttenuation = 0.7; // Åö×²ºóµÄËÙ¶ÈË¥¼õÏµÊý
-    float eps = 1e-5;               // Ò»¸öºÜÐ¡µÄ¾àÀë£¬ÓÃÓÚ±ß½ç´¦Àí£¬·ÀÖ¹Á£×Ó´©¹ý±ß½ç
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    float dt = 0.0016;              // Ê±ï¿½ä²½ï¿½ï¿½
+    int substep = 1;                // ï¿½Ó²ï¿½ï¿½ï¿½
+    float maxVelocity = 10;         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+    float velocityAttenuation = 0.7; // ï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½Ë¥ï¿½ï¿½Ïµï¿½ï¿½
+    float eps = 1e-5;               // Ò»ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½Ä¾ï¿½ï¿½ë£¬ï¿½ï¿½ï¿½Ú±ß½ç´¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¹ï¿½ï¿½ï¿½Ó´ï¿½ï¿½ï¿½ï¿½ß½ï¿½
 
-    // Á£×ÓÏµÍ³²ÎÊý
-    float supportRadius = 0.04;      // ÔÚ´Ë°ë¾¶ÄÚµÄÏàÁÚÁ£×Ó»á¶Ôµ±Ç°Á£×Ó²úÉúÓ°Ïì
-    float particleRadius = 0.01;     // Á£×ÓµÄ°ë¾¶
-    float particleDiameter = particleRadius * 2.0;  // Á£×ÓÖ±¾¶
-    float gravityX = 0.0f;          // xÖáÉÏµÄ¼ÓËÙ¶È
-    float gravityY = 9.8f;          // yÖáÉÏµÄ¼ÓËÙ¶È
-    float density = 1000.0f;        // Á÷ÌåÃÜ¶È
-    float stiffness = 70.0f;        // ¸Õ¶È
-    float exponent = 7.0f;          // Ñ¹Á¦¼ÆËã¹«Ê½ÖÐµÄÖ¸Êý
-    float viscosity = 0.03f;        // Õ³¶È
+    // ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½
+    float supportRadius = 0.04;      // ï¿½Ú´Ë°ë¾¶ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó»ï¿½Ôµï¿½Ç°ï¿½ï¿½ï¿½Ó²ï¿½ï¿½ï¿½Ó°ï¿½ï¿½
+    float particleRadius = 0.01;     // ï¿½ï¿½ï¿½ÓµÄ°ë¾¶
+    float particleDiameter = particleRadius * 2.0;  // ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½
+    float gravityX = 0.0f;          // xï¿½ï¿½ï¿½ÏµÄ¼ï¿½ï¿½Ù¶ï¿½
+    float gravityY = 9.8f;          // yï¿½ï¿½ï¿½ÏµÄ¼ï¿½ï¿½Ù¶ï¿½
+    float density = 1000.0f;        // ï¿½ï¿½ï¿½ï¿½ï¿½Ü¶ï¿½
+    float stiffness = 70.0f;        // ï¿½Õ¶ï¿½
+    float exponent = 7.0f;          // Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ã¹«Ê½ï¿½Ðµï¿½Ö¸ï¿½ï¿½
+    float viscosity = 0.03f;        // Õ³ï¿½ï¿½
 }
 
-// 3DÀ­¸ñÀÊÈÕ·½·¨Ïà¹Ø²ÎÊý
+// 3Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½
 namespace Lagrangian3dPara
 {
-    // Ëõ·ÅÏµÊý
+    // ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½
     float scale = 1.2;
     
-    // Á÷Ìå¿é³õÊ¼ÅäÖÃ
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
     std::vector<FluidBlock> fluidBlocks = {
         {
             glm::vec3(0.05, 0.05, 0.3), glm::vec3(0.45, 0.45, 0.7), glm::vec3(0.0, 0.0, -1.0), 0.02f
@@ -124,31 +124,31 @@ namespace Lagrangian3dPara
         }   
     };
     
-    // Çó½âÆ÷ÉèÖÃ
-    float dt = 0.002;               // Ê±¼ä²½³¤
-    int substep = 1;                // ×Ó²½Êý
-    float maxVelocity = 10;         // ×î´óÔÊÐíËÙ¶È
-    float velocityAttenuation = 0.7; // Åö×²ºóµÄËÙ¶ÈË¥¼õÏµÊý
-    float eps = 1e-5;               // Ò»¸öºÜÐ¡µÄ¾àÀë£¬ÓÃÓÚ±ß½ç´¦Àí
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    float dt = 0.002;               // Ê±ï¿½ä²½ï¿½ï¿½
+    int substep = 1;                // ï¿½Ó²ï¿½ï¿½ï¿½
+    float maxVelocity = 10;         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+    float velocityAttenuation = 0.7; // ï¿½ï¿½×²ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½Ë¥ï¿½ï¿½Ïµï¿½ï¿½
+    float eps = 1e-5;               // Ò»ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½Ä¾ï¿½ï¿½ë£¬ï¿½ï¿½ï¿½Ú±ß½ç´¦ï¿½ï¿½
 
-    // Á£×ÓÏµÍ³²ÎÊý
-    float supportRadius = 0.04;      // Ö§³Ö°ë¾¶
-    float particleRadius = 0.01;     // Á£×Ó°ë¾¶
-    float particleDiameter = particleRadius * 2.0;  // Á£×ÓÖ±¾¶
+    // ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½
+    float supportRadius = 0.04;      // Ö§ï¿½Ö°ë¾¶
+    float particleRadius = 0.01;     // ï¿½ï¿½ï¿½Ó°ë¾¶
+    float particleDiameter = particleRadius * 2.0;  // ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½
 
-    float gravityX = 0.0f;          // xÖáÖØÁ¦
-    float gravityY = 0.0f;          // yÖáÖØÁ¦
-    float gravityZ = 9.8f;          // zÖáÖØÁ¦
+    float gravityX = 0.0f;          // xï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    float gravityY = 0.0f;          // yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    float gravityZ = 9.8f;          // zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-    float density = 1000.0f;        // ÃÜ¶È
-    float stiffness = 20.0f;        // ¸Õ¶È
-    float exponent = 7.0f;          // Ñ¹Á¦Ö¸Êý
-    float viscosity = 8e-5f;        // Õ³¶È
+    float density = 1000.0f;        // ï¿½Ü¶ï¿½
+    float stiffness = 20.0f;        // ï¿½Õ¶ï¿½
+    float exponent = 7.0f;          // Ñ¹ï¿½ï¿½Ö¸ï¿½ï¿½
+    float viscosity = 8e-5f;        // Õ³ï¿½ï¿½
 }
 
-// ´æ´¢ÏµÍ³µÄËùÓÐ×é¼þ
+// ï¿½æ´¢ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 std::vector<Glb::Component *> methodComponents;
 
-// ×ÊÔ´Â·¾¶
+// ï¿½ï¿½Ô´Â·ï¿½ï¿½
 std::string shaderPath = "../../../../code/resources/shaders";
 std::string picturePath = "../../../../code/resources/pictures";

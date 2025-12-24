@@ -4,8 +4,8 @@
 #include <fstream>
 #include "Configure.h"
 
-// ÕâÊÇäÖÈ¾Æ÷µÄÖ÷ÒªÊµÏÖ,Éæ¼°OpenGLº¯ÊýµÄÊ¹ÓÃ
-// ÔÚÔÄ¶Á´ËÎÄ¼þÖ®Ç°,ÇëÈ·±£Äú¶ÔOpenGLÓÐ»ù±¾ÁË½â
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÒªÊµï¿½ï¿½,ï¿½æ¼°OpenGLï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½
+// ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ö®Ç°,ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½OpenGLï¿½Ð»ï¿½ï¿½ï¿½ï¿½Ë½ï¿½
 
 namespace FluidSimulation
 {
@@ -17,30 +17,30 @@ namespace FluidSimulation
         {
         }
 
-        // ³õÊ¼»¯äÖÈ¾Æ÷
+        // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½
         int32_t Renderer::init()
         {
             extern std::string shaderPath;
 
-            // ¼ÓÔØ²¢±àÒëÁ£×Ó×ÅÉ«Æ÷
+            // ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«ï¿½ï¿½
             std::string particleVertShaderPath = shaderPath + "/DrawParticles2d.vert";
             std::string particleFragShaderPath = shaderPath + "/DrawParticles2d.frag";
             shader = new Glb::Shader();
             shader->buildFromFile(particleVertShaderPath, particleFragShaderPath);
 
-            // Éú³É¶¥µãÊý×é¶ÔÏó(VAO)
+            // ï¿½ï¿½ï¿½É¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(VAO)
             glGenVertexArrays(1, &VAO);
-            // Éú³ÉÎ»ÖÃµÄ¶¥µã»º³å¶ÔÏó(VBO)
+            // ï¿½ï¿½ï¿½ï¿½Î»ï¿½ÃµÄ¶ï¿½ï¿½ã»ºï¿½ï¿½ï¿½ï¿½ï¿½(VBO)
             glGenBuffers(1, &positionVBO);
-            // Éú³ÉÃÜ¶ÈµÄ¶¥µã»º³å¶ÔÏó(VBO)
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ü¶ÈµÄ¶ï¿½ï¿½ã»ºï¿½ï¿½ï¿½ï¿½ï¿½(VBO)
             glGenBuffers(1, &densityVBO);
 
-            // Éú³ÉÖ¡»º³å¶ÔÏó(FBO)
+            // ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(FBO)
             glGenFramebuffers(1, &FBO);
-            // °ó¶¨Ö¡»º³å
+            // ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½
             glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
-            // Éú³É²¢ÉèÖÃÎÆÀí
+            // ï¿½ï¿½ï¿½É²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             glGenTextures(1, &textureID);
             glBindTexture(GL_TEXTURE_2D, textureID);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imageWidth, imageHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -50,16 +50,16 @@ namespace FluidSimulation
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             glBindTexture(GL_TEXTURE_2D, 0);
 
-            // ½«ÎÆÀí¸½¼Óµ½Ö¡»º³å
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½Ö¡ï¿½ï¿½ï¿½ï¿½
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureID, 0);
 
-            // Éú³ÉäÖÈ¾»º³å¶ÔÏó(RBO)
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(RBO)
             glGenRenderbuffers(1, &RBO);
             glBindRenderbuffer(GL_RENDERBUFFER, RBO);
             glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, imageWidth, imageHeight);
             glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-            // ½«RBO¸½¼Óµ½Ö¡»º³å
+            // ï¿½ï¿½RBOï¿½ï¿½ï¿½Óµï¿½Ö¡ï¿½ï¿½ï¿½ï¿½
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
@@ -67,59 +67,59 @@ namespace FluidSimulation
             }
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            // ÉèÖÃÊÓ¿Ú´óÐ¡
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿Ú´ï¿½Ð¡
             glViewport(0, 0, imageWidth, imageHeight);
 
             return 0;
         }
 
-        // »æÖÆÁ£×ÓÏµÍ³
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³
         void Renderer::draw(ParticleSystem2d& ps)
         {
-            // °ó¶¨VAO
+            // ï¿½ï¿½VAO
             glBindVertexArray(VAO);
 
-            // °ó¶¨²¢¸üÐÂÎ»ÖÃVBO
+            // ï¿½ó¶¨²ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½VBO
             glBindBuffer(GL_ARRAY_BUFFER, positionVBO);
             glBufferData(GL_ARRAY_BUFFER, ps.particles.size() * sizeof(ParticleInfo2d), ps.particles.data(), GL_STATIC_DRAW);
 
-            // ÉèÖÃÎ»ÖÃÊôÐÔ
+            // ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(ParticleInfo2d), (void*)offsetof(ParticleInfo2d, position));
             glEnableVertexAttribArray(0);
 
-            // ÉèÖÃÃÜ¶ÈÊôÐÔ
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(ParticleInfo2d), (void*)offsetof(ParticleInfo2d, density));
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ü¶ï¿½ï¿½ï¿½ï¿½ï¿½
+            glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(ParticleInfo2d), (void*)offsetof(ParticleInfo2d, density));
             glEnableVertexAttribArray(1);
 
             glBindVertexArray(0);
 
-            // ±£´æÁ£×ÓÊýÁ¿
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             particleNum = ps.particles.size();
 
-            // °ó¶¨Ö¡»º³å¿ªÊ¼äÖÈ¾
+            // ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½å¿ªÊ¼ï¿½ï¿½È¾
             glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
-            // Çå¿Õ»º³åÇø
+            // ï¿½ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ï¿½
             glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
             glEnable(GL_DEPTH_TEST);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            // ×¼±¸äÖÈ¾
+            // ×¼ï¿½ï¿½ï¿½ï¿½È¾
             glBindVertexArray(VAO);
             shader->use();
             shader->setFloat("scale", ps.scale);
 
-            // ÆôÓÃµã¾«Áé
+            // ï¿½ï¿½ï¿½Ãµã¾«ï¿½ï¿½
             glEnable(GL_PROGRAM_POINT_SIZE);
 
-            // »æÖÆËùÓÐÁ£×Ó
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             glDrawArrays(GL_POINTS, 0, particleNum);
 
-            // ½â°óÖ¡»º³å
+            // ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
-        // »ñÈ¡äÖÈ¾½á¹ûµÄÎÆÀíID
+        // ï¿½ï¿½È¡ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
         GLuint Renderer::getRenderedTexture()
         {
             return textureID;

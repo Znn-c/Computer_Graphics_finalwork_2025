@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Global.h"
 #include <unordered_set>
+#include <algorithm>
 
 namespace FluidSimulation
 {
@@ -16,26 +17,26 @@ namespace FluidSimulation
         {
         }
 
-        // ÉèÖÃÁ÷ÌåÈÝÆ÷µÄ´óÐ¡
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½Ð¡
         void ParticleSystem2d::setContainerSize(glm::vec2 lower = glm::vec2(-1.0f, -1.0f), glm::vec2 upper = glm::vec2(1.0f, 1.0f))
         {
-            // Ó¦ÓÃËõ·Å
+            // Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             lower *=  Lagrangian2dPara::scale;
             upper *= Lagrangian2dPara::scale;
 
-            // ÉèÖÃ±ß½ç,¿¼ÂÇÖ§³Ö°ë¾¶ºÍÁ£×ÓÖ±¾¶
+            // ï¿½ï¿½ï¿½Ã±ß½ï¿½,ï¿½ï¿½ï¿½ï¿½Ö§ï¿½Ö°ë¾¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½
             lowerBound = lower - supportRadius + particleDiameter;
             upperBound = upper + supportRadius - particleDiameter;
             containerCenter = (lowerBound + upperBound) / 2.0f;
 
             glm::vec2 size = upperBound - lowerBound;
 
-            // ¼ÆËã¿éµÄÊýÁ¿ºÍ´óÐ¡
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í´ï¿½Ð¡
             blockNum.x = floor(size.x / supportRadius);
             blockNum.y = floor(size.y / supportRadius);
             blockSize = glm::vec2(size.x / blockNum.x, size.y / blockNum.y);
 
-            // ³õÊ¼»¯¿éÆ«ÒÆÊý×é
+            // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             blockIdOffs.resize(9);
             int p = 0;
             for (int j = -1; j <= 1; j++)
@@ -47,20 +48,20 @@ namespace FluidSimulation
                 }
             }
 
-            // Çå¿ÕÁ£×ÓÊý×é
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             particles.clear();
         }
 
-        // Ìí¼ÓÁ÷Ìå¿é
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         int ParticleSystem2d::addFluidBlock(glm::vec2 lowerCorner, glm::vec2 upperCorner, glm::vec2 v0, float particleSpace)
         {
-            // Ó¦ÓÃËõ·Å
+            // Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             lowerCorner *= Lagrangian2dPara::scale;
             upperCorner *= Lagrangian2dPara::scale;
 
             glm::vec2 size = upperCorner - lowerCorner;
 
-            // ¼ì²é±ß½ç
+            // ï¿½ï¿½ï¿½ß½ï¿½
             if (lowerCorner.x < lowerBound.x ||
                 lowerCorner.y < lowerBound.y ||
                 upperCorner.x > upperBound.x ||
@@ -69,23 +70,23 @@ namespace FluidSimulation
                 return 0;
             }
 
-            // ¼ÆËãÁ£×ÓÊýÁ¿
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             glm::uvec2 particleNum = glm::uvec2(size.x / particleSpace, size.y / particleSpace);
             std::vector<ParticleInfo2d> tempParticles(particleNum.x * particleNum.y);
 
-            // Ëæ»úÉú³ÉÆ÷,ÓÃÓÚÁ£×ÓÎ»ÖÃµÄÈÅ¶¯
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ãµï¿½ï¿½Å¶ï¿½
             Glb::RandomGenerator rand;
             int p = 0;
-            // ÔÚÁ÷Ìå¿éÖÐÉú³ÉÁ£×Ó
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             for (int idX = 0; idX < particleNum.x; idX++)
             {
                 for (int idY = 0; idY < particleNum.y; idY++)
                 {
-                    // Ìí¼ÓËæ»úÈÅ¶¯±ÜÃâ¹æÔòÅÅÁÐ
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     float x = (idX + rand.GetUniformRandom()) * particleSpace;
                     float y = (idY + rand.GetUniformRandom()) * particleSpace;
 
-                    // ÉèÖÃÁ£×ÓÊôÐÔ
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     tempParticles[p].position = lowerCorner + glm::vec2(x, y);
                     tempParticles[p].blockId = getBlockIdByPosition(tempParticles[p].position);
                     tempParticles[p].density = Lagrangian2dPara::density;
@@ -94,15 +95,15 @@ namespace FluidSimulation
                 }
             }
 
-            // ½«ÐÂÁ£×ÓÌí¼Óµ½ÏµÍ³ÖÐ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ÏµÍ³ï¿½ï¿½
             particles.insert(particles.end(), tempParticles.begin(), tempParticles.end());
             return particles.size();
         }
 
-        // ¸ù¾ÝÎ»ÖÃ»ñÈ¡¿éID
+        // ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ã»ï¿½È¡ï¿½ï¿½ID
         uint32_t ParticleSystem2d::getBlockIdByPosition(glm::vec2 position)
         {
-            // ¼ì²é±ß½ç
+            // ï¿½ï¿½ï¿½ß½ï¿½
             if (position.x < lowerBound.x ||
                 position.y < lowerBound.y ||
                 position.x > upperBound.x ||
@@ -111,24 +112,24 @@ namespace FluidSimulation
                 return -1;
             }
 
-            // ¼ÆËã¿éË÷Òý
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             glm::vec2 deltePos = position - lowerBound;
             uint32_t c = floor(deltePos.x / blockSize.x);
             uint32_t r = floor(deltePos.y / blockSize.y);
             return r * blockNum.x + c;
         }
 
-        // ¸üÐÂ¿éÐÅÏ¢
+        // ï¿½ï¿½ï¿½Â¿ï¿½ï¿½ï¿½Ï¢
         void ParticleSystem2d::updateBlockInfo()
         {
-            // ¸ù¾Ý¿éID¶ÔÁ£×Ó½øÐÐÅÅÐò
+            // ï¿½ï¿½ï¿½Ý¿ï¿½IDï¿½ï¿½ï¿½ï¿½ï¿½Ó½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             std::sort(particles.begin(), particles.end(),
                       [=](ParticleInfo2d &first, ParticleInfo2d &second)
                       {
                           return first.blockId < second.blockId;
                       });
 
-            // ¸üÐÂÃ¿¸ö¿éÖÐÁ£×ÓµÄ·¶Î§
+            // ï¿½ï¿½ï¿½ï¿½Ã¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÓµÄ·ï¿½Î§
             blockExtens = std::vector<glm::uvec2>(blockNum.x * blockNum.y, glm::uvec2(0, 0));
             int curBlockId = 0;
             int left = 0;
