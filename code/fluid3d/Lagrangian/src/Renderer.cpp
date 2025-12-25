@@ -65,15 +65,15 @@ namespace FluidSimulation
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(particle3d), (void *)offsetof(particle3d, position));
             glEnableVertexAttribArray(0); // location = 0
-            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(particle3d), (void *)offsetof(particle3d, density));
+            glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, sizeof(particle3d), (void *)offsetof(particle3d, density));
             glEnableVertexAttribArray(1); // location = 1
             glBindVertexArray(0);
         }
 
         void Renderer::draw(ParticleSystem3d &ps)
         {
-            glBindBuffer(GL_SHADER_STORAGE_BUFFER, VBO);
-            glBufferData(GL_SHADER_STORAGE_BUFFER, ps.particles.size() * sizeof(particle3d), ps.particles.data(), GL_DYNAMIC_COPY);
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, ps.particles.size() * sizeof(particle3d), ps.particles.data(), GL_DYNAMIC_COPY);
             particleNum = ps.particles.size();
 
             glBindFramebuffer(GL_FRAMEBUFFER, FBO);

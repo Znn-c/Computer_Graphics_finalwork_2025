@@ -1,6 +1,6 @@
 /**
- * Lagrangian3dComponent.cpp: 3DÀ­¸ñÀÊÈÕÁ÷Ìå×é¼þÊµÏÖÎÄ¼þ
- * ÊµÏÖ×é¼þµÄ³õÊ¼»¯¡¢·ÂÕæºÍäÖÈ¾¹¦ÄÜ
+ * Lagrangian3dComponent.cpp: 3Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½ï¿½Ä¼ï¿½
+ * Êµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½
  */
 
 #include "Lagrangian3dComponent.h"
@@ -10,7 +10,7 @@ namespace FluidSimulation
     namespace Lagrangian3d
     {
         /**
-         * ¹Ø±Õ×é¼þ£¬ÊÍ·Å×ÊÔ´
+         * ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½ï¿½Ô´
          */
         void Lagrangian3dComponent::shutDown()
         {
@@ -21,8 +21,8 @@ namespace FluidSimulation
         }
 
         /**
-         * ³õÊ¼»¯×é¼þ
-         * ´´½¨äÖÈ¾Æ÷¡¢Á£×ÓÏµÍ³ºÍÇó½âÆ÷
+         * ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½
+         * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
          */
         void Lagrangian3dComponent::init()
         {
@@ -38,9 +38,57 @@ namespace FluidSimulation
             ps = new ParticleSystem3d();
             ps->setContainerSize(glm::vec3(0.0, 0.0, 0.0), glm::vec3(1, 1, 1));
             
+            auto isValidBlock = [](const Lagrangian3dPara::FluidBlock& b) {
+                if (!(b.upperCorner.x > b.lowerCorner.x && b.upperCorner.y > b.lowerCorner.y && b.upperCorner.z > b.lowerCorner.z))
+                {
+                    return false;
+                }
+                if (!(b.particleSpace > 0.0f))
+                {
+                    return false;
+                }
+                return true;
+            };
+
+            auto defaultBlock = []() {
+                Lagrangian3dPara::FluidBlock b;
+                b.lowerCorner = glm::vec3(0.1f, 0.1f, 0.55f);
+                b.upperCorner = glm::vec3(0.9f, 0.9f, 0.9f);
+                b.initVel = glm::vec3(0.0f, 0.0f, 0.0f);
+                b.particleSpace = 0.04f;
+                return b;
+            };
+
+            bool hasValidBlock = false;
+            for (int i = 0; i < Lagrangian3dPara::fluidBlocks.size(); i++)
+            {
+                if (isValidBlock(Lagrangian3dPara::fluidBlocks[i]))
+                {
+                    hasValidBlock = true;
+                    break;
+                }
+            }
+            if (!hasValidBlock)
+            {
+                Lagrangian3dPara::fluidBlocks.clear();
+                Lagrangian3dPara::fluidBlocks.push_back(defaultBlock());
+            }
+
             for (int i = 0; i < Lagrangian3dPara::fluidBlocks.size(); i++) {
+                if (!isValidBlock(Lagrangian3dPara::fluidBlocks[i]))
+                {
+                    continue;
+                }
                 ps->addFluidBlock(Lagrangian3dPara::fluidBlocks[i].lowerCorner, Lagrangian3dPara::fluidBlocks[i].upperCorner,
                     Lagrangian3dPara::fluidBlocks[i].initVel, Lagrangian3dPara::fluidBlocks[i].particleSpace);
+            }
+
+            if (ps->particles.empty())
+            {
+                Lagrangian3dPara::fluidBlocks.clear();
+                Lagrangian3dPara::fluidBlocks.push_back(defaultBlock());
+                ps->addFluidBlock(Lagrangian3dPara::fluidBlocks[0].lowerCorner, Lagrangian3dPara::fluidBlocks[0].upperCorner,
+                    Lagrangian3dPara::fluidBlocks[0].initVel, Lagrangian3dPara::fluidBlocks[0].particleSpace);
             }
 
             ps->updateBlockInfo();

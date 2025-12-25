@@ -1,4 +1,4 @@
-﻿#include "ParticleSystem3d.h"
+#include "ParticleSystem3d.h"
 #include <iostream>
 #include <algorithm>
 #include <Global.h>
@@ -122,11 +122,15 @@ namespace FluidSimulation
                           return first.blockId < second.blockId;
                       });
 
-
             blockExtens = std::vector<glm::uvec2>(blockNum.x * blockNum.y * blockNum.z, glm::uvec2(0, 0));
-            int curBlockId = 0;
-            int left = 0;
-            int right;
+            if (particles.empty())
+            {
+                return;
+            }
+
+            uint32_t curBlockId = particles[0].blockId;
+            uint32_t left = 0;
+            uint32_t right = 0;
             for (right = 0; right < particles.size(); right++)
             {
                 if (particles[right].blockId != curBlockId)

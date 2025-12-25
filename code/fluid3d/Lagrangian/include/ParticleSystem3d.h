@@ -4,6 +4,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <cfloat>
 #include "Configure.h"
 
 namespace FluidSimulation
@@ -16,9 +17,9 @@ namespace FluidSimulation
             alignas(16) glm::vec3 position;      // 位置
             alignas(16) glm::vec3 velocity;      // 速度
             alignas(16) glm::vec3 accleration;   // 加速度
-            alignas(4) float_t density;          // 密度
-            alignas(4) float_t pressure;         // 压力
-            alignas(4) float_t pressDivDens2;    // 压力除以密度平方
+            alignas(4) float density;            // 密度
+            alignas(4) float pressure;           // 压力
+            alignas(4) float pressDivDens2;      // 压力除以密度平方
             alignas(4) uint32_t blockId;         // 所在块的ID
         };
 
@@ -44,7 +45,7 @@ namespace FluidSimulation
             float supportRadius2 = supportRadius * supportRadius;       // 支持半径平方
             float particleRadius = Lagrangian3dPara::particleRadius;   // 粒子半径
             float particleDiameter = Lagrangian3dPara::particleDiameter;  // 粒子直径
-            float particleVolume = std::pow(particleDiameter, 3);      // 粒子体积
+            float particleVolume = particleDiameter * particleDiameter * particleDiameter;      // 粒子体积
 
             // 粒子数据
             std::vector<particle3d> particles;  // 粒子数组
