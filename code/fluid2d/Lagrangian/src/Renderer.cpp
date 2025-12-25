@@ -76,12 +76,36 @@ namespace FluidSimulation
         // ��������ϵͳ
         void Renderer::draw(ParticleSystem2d& ps)
         {
+            std::vector<ParticleInfo2d> renderParticles;
+            size_t solidPointNum = 0;
+            for (const auto& body : ps.solids)
+            {
+                solidPointNum += body.worldPoints.size();
+            }
+            renderParticles.reserve(ps.particles.size() + solidPointNum);
+            renderParticles.insert(renderParticles.end(), ps.particles.begin(), ps.particles.end());
+            for (const auto& body : ps.solids)
+            {
+                for (const auto& sp : body.worldPoints)
+                {
+                    ParticleInfo2d p;
+                    p.position = sp;
+                    p.velocity = glm::vec2(0.0f);
+                    p.accleration = glm::vec2(0.0f);
+                    p.density = 5000.0f;
+                    p.pressure = 0.0f;
+                    p.pressDivDens2 = 0.0f;
+                    p.blockId = 0;
+                    renderParticles.push_back(p);
+                }
+            }
+
             // ��VAO
             glBindVertexArray(VAO);
 
             // �󶨲�����λ��VBO
             glBindBuffer(GL_ARRAY_BUFFER, positionVBO);
-            glBufferData(GL_ARRAY_BUFFER, ps.particles.size() * sizeof(ParticleInfo2d), ps.particles.data(), GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, renderParticles.size() * sizeof(ParticleInfo2d), renderParticles.data(), GL_STATIC_DRAW);
 
             // ����λ������
             glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(ParticleInfo2d), (void*)offsetof(ParticleInfo2d, position));
@@ -94,7 +118,7 @@ namespace FluidSimulation
             glBindVertexArray(0);
 
             // ������������
-            particleNum = ps.particles.size();
+            particleNum = renderParticles.size();
 
             // ��֡���忪ʼ��Ⱦ
             glBindFramebuffer(GL_FRAMEBUFFER, FBO);

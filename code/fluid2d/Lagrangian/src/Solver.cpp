@@ -7,6 +7,7 @@
 #include "Global.h"
 #include <iostream>
 #include <algorithm>
+#include <cfloat>
 #include <cmath>
 #include <glm/gtc/constants.hpp>
 
@@ -81,12 +82,22 @@ namespace FluidSimulation
             const float nozzleSpeed = Lagrangian2dPara::maxVelocity;
             const glm::vec2 nozzleCenter = glm::vec2(mPs.containerCenter.x, mPs.lowerBound.y + 4.0f * mPs.particleDiameter);
 
+            const float solidStiffness = 8000.0f;
+            const float solidDamping = 120.0f;
+
             for (auto& p : mPs.particles)
             {
                 p.density = 0.0f;
                 p.pressure = 0.0f;
                 p.pressDivDens2 = 0.0f;
                 p.accleration = glm::vec2(0.0f);
+            }
+
+            mPs.updateSolidWorldPoints();
+            for (auto& body : mPs.solids)
+            {
+                body.force = body.mass * gravity;
+                body.torque = 0.0f;
             }
 
             auto visitNeighbors = [&](uint32_t blockId, auto&& visitor)
@@ -175,7 +186,39 @@ namespace FluidSimulation
                                    aVisc += viscosity * mass * (pj.velocity - pi.velocity) / pj.density * lapW;
                                });
 
-                pi.accleration = aPressure + aVisc + gravity;
+                glm::vec2 aSolid(0.0f);
+                for (auto& body : mPs.solids)
+                {
+                    for (const auto& sp : body.worldPoints)
+                    {
+                        glm::vec2 r = pi.position - sp;
+                        float r2 = glm::dot(r, r);
+                        if (r2 >= h2)
+                        {
+                            continue;
+                        }
+                        float rLen = std::sqrt(r2);
+                        if (rLen <= 1e-6f)
+                        {
+                            continue;
+                        }
+
+                        float x = h - rLen;
+                        glm::vec2 n = r / rLen;
+
+                        glm::vec2 relPos = sp - body.position;
+                        glm::vec2 vSolid = body.velocity + body.angularVelocity * glm::vec2(-relPos.y, relPos.x);
+                        glm::vec2 relVel = pi.velocity - vSolid;
+
+                        glm::vec2 f = solidStiffness * x * x * n - solidDamping * x * relVel;
+
+                        aSolid += f / mass;
+                        body.force -= f;
+                        body.torque -= (relPos.x * f.y - relPos.y * f.x);
+                    }
+                }
+
+                pi.accleration = aPressure + aVisc + aSolid + gravity;
             }
 
             for (auto& p : mPs.particles)
@@ -222,6 +265,74 @@ namespace FluidSimulation
 
                 p.blockId = mPs.getBlockIdByPosition(p.position);
             }
+
+            for (auto& body : mPs.solids)
+            {
+                body.velocity += dt * body.force * body.invMass;
+                body.angularVelocity += dt * body.torque * body.invInertia;
+
+                body.velocity *= 0.999f;
+                body.angularVelocity *= 0.999f;
+
+                body.position += dt * body.velocity;
+                body.angle += dt * body.angularVelocity;
+            }
+
+            mPs.updateSolidWorldPoints();
+
+            const float eps = Lagrangian2dPara::eps;
+            const float atten = Lagrangian2dPara::velocityAttenuation;
+            for (auto& body : mPs.solids)
+            {
+                if (body.worldPoints.empty())
+                {
+                    continue;
+                }
+
+                glm::vec2 mn(FLT_MAX);
+                glm::vec2 mx(-FLT_MAX);
+                for (const auto& p : body.worldPoints)
+                {
+                    mn.x = (std::min)(mn.x, p.x);
+                    mn.y = (std::min)(mn.y, p.y);
+                    mx.x = (std::max)(mx.x, p.x);
+                    mx.y = (std::max)(mx.y, p.y);
+                }
+
+                bool collided = false;
+                if (mn.x < mPs.lowerBound.x + eps)
+                {
+                    body.position.x += (mPs.lowerBound.x + eps - mn.x);
+                    body.velocity.x *= -atten;
+                    collided = true;
+                }
+                else if (mx.x > mPs.upperBound.x - eps)
+                {
+                    body.position.x -= (mx.x - (mPs.upperBound.x - eps));
+                    body.velocity.x *= -atten;
+                    collided = true;
+                }
+
+                if (mn.y < mPs.lowerBound.y + eps)
+                {
+                    body.position.y += (mPs.lowerBound.y + eps - mn.y);
+                    body.velocity.y *= -atten;
+                    collided = true;
+                }
+                else if (mx.y > mPs.upperBound.y - eps)
+                {
+                    body.position.y -= (mx.y - (mPs.upperBound.y - eps));
+                    body.velocity.y *= -atten;
+                    collided = true;
+                }
+
+                if (collided)
+                {
+                    body.angularVelocity *= atten;
+                }
+            }
+
+            mPs.updateSolidWorldPoints();
         }
     }
 }

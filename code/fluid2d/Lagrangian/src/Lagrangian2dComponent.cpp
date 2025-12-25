@@ -95,6 +95,8 @@ namespace FluidSimulation
                     Lagrangian2dPara::fluidBlocks[0].initVel, Lagrangian2dPara::fluidBlocks[0].particleSpace);
             }
 
+            ps->addSolidDisk(glm::vec2(0.0f, -0.2f), 0.15f, glm::vec2(0.0f, 0.0f), 30.0f, 0.02f);
+
             ps->updateBlockInfo();
 
             Glb::Logger::getInstance().addLog("2d Particle System initialized. particle num: " + std::to_string(ps->particles.size()));
