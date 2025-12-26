@@ -18,14 +18,10 @@ namespace FluidSimulation
         void ParticleSystem3d::setContainerSize(glm::vec3 corner = glm::vec3(0.0, 0.0, 0.0), glm::vec3 size = glm::vec3(1, 1, 1))
         {
 
-            corner *= Lagrangian3dPara::scale;
             size *= Lagrangian3dPara::scale;
 
-            containerLower = corner;
-            containerUpper = corner + size;
-
-            lowerBound = containerLower - supportRadius + particleDiameter;
-            upperBound = containerUpper + supportRadius - particleDiameter;
+            lowerBound = corner - supportRadius + particleDiameter;
+            upperBound = corner + size + supportRadius - particleDiameter;
             containerCenter = (lowerBound + upperBound) / 2.0f;
             size = upperBound - lowerBound;
 
@@ -62,12 +58,12 @@ namespace FluidSimulation
 
             glm::vec3 size = upperCorner - lowerCorner;
 
-            if (lowerCorner.x < containerLower.x ||
-                lowerCorner.y < containerLower.y ||
-                lowerCorner.z < containerLower.z ||
-                upperCorner.x > containerUpper.x ||
-                upperCorner.y > containerUpper.y ||
-                upperCorner.z > containerUpper.z)
+            if (lowerCorner.x < lowerBound.x ||
+                lowerCorner.y < lowerBound.y ||
+                lowerCorner.z < lowerBound.z ||
+                upperCorner.x > upperBound.x ||
+                upperCorner.y > upperBound.y ||
+                upperCorner.z > upperBound.z)
             {
                 return 0;
             }

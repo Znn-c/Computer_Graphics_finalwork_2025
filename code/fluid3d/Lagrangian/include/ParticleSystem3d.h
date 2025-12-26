@@ -53,8 +53,6 @@ namespace FluidSimulation
             // 容器参数
             glm::vec3 lowerBound = glm::vec3(FLT_MAX);     // 容器下边界
             glm::vec3 upperBound = glm::vec3(-FLT_MAX);    // 容器上边界
-            glm::vec3 containerLower = glm::vec3(FLT_MAX); // 可视容器下边界(用于碰撞)
-            glm::vec3 containerUpper = glm::vec3(-FLT_MAX);// 可视容器上边界(用于碰撞)
             glm::vec3 containerCenter = glm::vec3(0.0f);   // 容器中心
             float scale = Lagrangian3dPara::scale;         // 缩放系数
 

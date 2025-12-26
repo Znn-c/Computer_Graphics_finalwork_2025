@@ -209,36 +209,36 @@ namespace FluidSimulation
 				const float eps = Lagrangian3dPara::eps;
 				const float atten = Lagrangian3dPara::velocityAttenuation;
 
-				if (p.position.x < mPs.containerLower.x + eps)
+				if (p.position.x < mPs.lowerBound.x + eps)
 				{
-					p.position.x = mPs.containerLower.x + eps;
+					p.position.x = mPs.lowerBound.x + eps;
 					p.velocity.x *= -atten;
 				}
-				else if (p.position.x > mPs.containerUpper.x - eps)
+				else if (p.position.x > mPs.upperBound.x - eps)
 				{
-					p.position.x = mPs.containerUpper.x - eps;
+					p.position.x = mPs.upperBound.x - eps;
 					p.velocity.x *= -atten;
 				}
 
-				if (p.position.y < mPs.containerLower.y + eps)
+				if (p.position.y < mPs.lowerBound.y + eps)
 				{
-					p.position.y = mPs.containerLower.y + eps;
+					p.position.y = mPs.lowerBound.y + eps;
 					p.velocity.y *= -atten;
 				}
-				else if (p.position.y > mPs.containerUpper.y - eps)
+				else if (p.position.y > mPs.upperBound.y - eps)
 				{
-					p.position.y = mPs.containerUpper.y - eps;
+					p.position.y = mPs.upperBound.y - eps;
 					p.velocity.y *= -atten;
 				}
 
-				if (p.position.z < mPs.containerLower.z + eps)
+				if (p.position.z < mPs.lowerBound.z + eps)
 				{
-					p.position.z = mPs.containerLower.z + eps;
+					p.position.z = mPs.lowerBound.z + eps;
 					p.velocity.z *= -atten;
 				}
-				else if (p.position.z > mPs.containerUpper.z - eps)
+				else if (p.position.z > mPs.upperBound.z - eps)
 				{
-					p.position.z = mPs.containerUpper.z - eps;
+					p.position.z = mPs.upperBound.z - eps;
 					p.velocity.z *= -atten;
 				}
 
