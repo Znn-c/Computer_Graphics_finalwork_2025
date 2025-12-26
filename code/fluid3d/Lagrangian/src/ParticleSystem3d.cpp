@@ -15,14 +15,17 @@ namespace FluidSimulation
         {
         }
 
-        void ParticleSystem3d::setContainerSize(glm::vec3 corner = glm::vec3(0.0, 0.0, 0.0), glm::vec3 size = glm::vec3(1, 1, 1))
+        void ParticleSystem3d::setContainerSize(glm::vec3 corner, glm::vec3 size)
         {
+            glm::vec3 scaledCorner = corner * Lagrangian3dPara::scale;
+            glm::vec3 scaledSize = size * Lagrangian3dPara::scale;
 
-            size *= Lagrangian3dPara::scale;
+            containerLower = scaledCorner;
+            containerUpper = scaledCorner + scaledSize;
 
-            lowerBound = corner - supportRadius + particleDiameter;
-            upperBound = corner + size + supportRadius - particleDiameter;
-            containerCenter = (lowerBound + upperBound) / 2.0f;
+            lowerBound = containerLower - supportRadius + particleDiameter;
+            upperBound = containerUpper + supportRadius - particleDiameter;
+            containerCenter = (containerLower + containerUpper) / 2.0f;
             size = upperBound - lowerBound;
 
             // 三个方向的block数量
@@ -58,12 +61,12 @@ namespace FluidSimulation
 
             glm::vec3 size = upperCorner - lowerCorner;
 
-            if (lowerCorner.x < lowerBound.x ||
-                lowerCorner.y < lowerBound.y ||
-                lowerCorner.z < lowerBound.z ||
-                upperCorner.x > upperBound.x ||
-                upperCorner.y > upperBound.y ||
-                upperCorner.z > upperBound.z)
+            if (lowerCorner.x < containerLower.x ||
+                lowerCorner.y < containerLower.y ||
+                lowerCorner.z < containerLower.z ||
+                upperCorner.x > containerUpper.x ||
+                upperCorner.y > containerUpper.y ||
+                upperCorner.z > containerUpper.z)
             {
                 return 0;
             }

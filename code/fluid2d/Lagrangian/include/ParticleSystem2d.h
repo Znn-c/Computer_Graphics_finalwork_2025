@@ -1,6 +1,6 @@
 /**
- * ParticleSystem2d.h: 2Dï¿½ï¿½ï¿½ï¿½ÏµÍ³Í·ï¿½Ä¼ï¿½
- * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½2Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý½á¹¹
+ * ParticleSystem2d.h: 2DÁ£×ÓÏµÍ³Í·ÎÄ¼þ
+ * ´æ´¢Á£×ÓµÄ2D½á¹¹
  */
 
 #pragma once
@@ -9,9 +9,7 @@
 
 #include <vector>
 #include <list>
-#include <cstdint>
 #include <cfloat>
-#include <cmath>
 #include <glm/glm.hpp>
 #include "Global.h"
 
@@ -23,44 +21,23 @@ namespace FluidSimulation
     namespace Lagrangian2d
     {
         /**
-         * 2Dï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½á¹¹ï¿½ï¿½
-         * ï¿½æ´¢ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+         * 2DÁ£×ÓÐÅÏ¢½á¹¹
+         * ´æ´¢ÓëÁ£×ÓÏà¹ØµÄÊôÐÔ
          */
         struct ParticleInfo2d
         {
-            alignas(8) glm::vec2 position;      // Î»ï¿½ï¿½
-            alignas(8) glm::vec2 velocity;      // ï¿½Ù¶ï¿½
-            alignas(8) glm::vec2 accleration;    // ï¿½ï¿½ï¿½Ù¶ï¿½
-            alignas(4) float density;            // ï¿½Ü¶ï¿½
-            alignas(4) float pressure;          // Ñ¹ï¿½ï¿½
-            alignas(4) float pressDivDens2;      // Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü¶Èµï¿½Æ½ï¿½ï¿½
-            alignas(4) uint32_t blockId;         // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
-        };
-
-        struct SolidBody2d
-        {
-            std::vector<glm::vec2> localPoints;
-            std::vector<glm::vec2> worldPoints;
-
-            glm::vec2 position = glm::vec2(0.0f);
-            float angle = 0.0f;
-
-            glm::vec2 velocity = glm::vec2(0.0f);
-            float angularVelocity = 0.0f;
-
-            float radius = 0.0f;
-            float mass = 1.0f;
-            float invMass = 1.0f;
-            float inertia = 1.0f;
-            float invInertia = 1.0f;
-
-            glm::vec2 force = glm::vec2(0.0f);
-            float torque = 0.0f;
+            alignas(8) glm::vec2 position;      // ¦Ë??
+            alignas(8) glm::vec2 velocity;      // ???
+            alignas(8) glm::vec2 accleration;   // ?????
+            alignas(4) float density;           // ???
+            alignas(4) float pressure;          // ???
+            alignas(4) float pressDivDens2;     // ??????????????
+            alignas(4) uint32_t blockId;        // ?????????ID
         };
 
         /**
-         * 2Dï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½
-         * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Óµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÔºÍ¿Õ¼ï¿½ï¿½ï¿½ï¿½ï¿½
+         * 2DÁ£×ÓÏµÍ³Àà
+         * ´¦ÀíÓëÁ£×ÓÏà¹ØµÄÄ£ÄâºÍ¼ÆËã
          */
         class ParticleSystem2d
         {
@@ -70,30 +47,27 @@ namespace FluidSimulation
 
             void setContainerSize(glm::vec2 containerCorner, glm::vec2 containerSize);
             int32_t addFluidBlock(glm::vec2 corner, glm::vec2 size, glm::vec2 v0, float particleSpace);
-            int32_t addSolidDisk(glm::vec2 center, float radius, glm::vec2 v0, float mass, float pointSpace);
             uint32_t getBlockIdByPosition(glm::vec2 position);
             void updateBlockInfo();
-            void updateSolidWorldPoints();
 
         public:
-            // ï¿½ï¿½ï¿½Ó²ï¿½ï¿½ï¿½
+            // ???????
             float supportRadius = Lagrangian2dPara::supportRadius;
             float supportRadius2 = supportRadius * supportRadius;
             float particleRadius = Lagrangian2dPara::particleRadius;
             float particleDiameter = Lagrangian2dPara::particleDiameter;
             float particleVolume = particleDiameter * particleDiameter;
 
-            // ï¿½æ´¢È«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
+            // ?›¥??????????
             std::vector<ParticleInfo2d> particles;
-            std::vector<SolidBody2d> solids;
 
-            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // ????????
             glm::vec2 lowerBound = glm::vec2(FLT_MAX);
             glm::vec2 upperBound = glm::vec2(-FLT_MAX);
             glm::vec2 containerCenter = glm::vec2(0.0f);
             float scale = Lagrangian2dPara::scale;
             
-            // Blockï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ù½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            // Block?????????????????
             glm::uvec2 blockNum = glm::uvec2(0);
             glm::vec2 blockSize = glm::vec2(0.0f);
             std::vector<glm::uvec2> blockExtens;

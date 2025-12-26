@@ -1,9 +1,13 @@
-﻿
+
 cmake_minimum_required (VERSION 3.8)
 
 project(FluidSimulationSystem VERSION 1.0
 		DESCRIPTION "A simple system for fluid simulation"
 		LANGUAGES C CXX)
+
+if(MSVC)
+	add_compile_options(/utf-8)
+endif()
 
 # where to find the .h
 include_directories(

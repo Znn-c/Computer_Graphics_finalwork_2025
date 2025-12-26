@@ -193,6 +193,44 @@ namespace FluidSimulation
 				pi.accleration = aPressure + aVisc + gravity;
 			}
 
+			const float xsphCoef = 0.1f;
+			if (xsphCoef > 0.0f)
+			{
+				for (size_t i = 0; i < mPs.particles.size(); i++)
+				{
+					auto& pi = mPs.particles[i];
+					glm::vec3 vCorr(0.0f);
+					float wSum = 0.0f;
+
+					const uint32_t myBlockId = pi.blockId;
+					visitNeighbors(myBlockId,
+						[&](uint32_t j)
+						{
+							if (j == i)
+							{
+								return;
+							}
+
+							const auto& pj = mPs.particles[j];
+							glm::vec3 r = pi.position - pj.position;
+							float r2 = glm::dot(r, r);
+							if (r2 >= h2)
+							{
+								return;
+							}
+
+							float w = Poly6Kernel3d(r2, h, h2);
+							vCorr += (pj.velocity - pi.velocity) * w;
+							wSum += w;
+						});
+
+					if (wSum > 0.0f)
+					{
+						pi.velocity += xsphCoef * (vCorr / wSum);
+					}
+				}
+			}
+
 			for (auto& p : mPs.particles)
 			{
 				p.velocity += dt * p.accleration;
@@ -209,36 +247,36 @@ namespace FluidSimulation
 				const float eps = Lagrangian3dPara::eps;
 				const float atten = Lagrangian3dPara::velocityAttenuation;
 
-				if (p.position.x < mPs.lowerBound.x + eps)
+				if (p.position.x < mPs.containerLower.x + eps)
 				{
-					p.position.x = mPs.lowerBound.x + eps;
+					p.position.x = mPs.containerLower.x + eps;
 					p.velocity.x *= -atten;
 				}
-				else if (p.position.x > mPs.upperBound.x - eps)
+				else if (p.position.x > mPs.containerUpper.x - eps)
 				{
-					p.position.x = mPs.upperBound.x - eps;
+					p.position.x = mPs.containerUpper.x - eps;
 					p.velocity.x *= -atten;
 				}
 
-				if (p.position.y < mPs.lowerBound.y + eps)
+				if (p.position.y < mPs.containerLower.y + eps)
 				{
-					p.position.y = mPs.lowerBound.y + eps;
+					p.position.y = mPs.containerLower.y + eps;
 					p.velocity.y *= -atten;
 				}
-				else if (p.position.y > mPs.upperBound.y - eps)
+				else if (p.position.y > mPs.containerUpper.y - eps)
 				{
-					p.position.y = mPs.upperBound.y - eps;
+					p.position.y = mPs.containerUpper.y - eps;
 					p.velocity.y *= -atten;
 				}
 
-				if (p.position.z < mPs.lowerBound.z + eps)
+				if (p.position.z < mPs.containerLower.z + eps)
 				{
-					p.position.z = mPs.lowerBound.z + eps;
+					p.position.z = mPs.containerLower.z + eps;
 					p.velocity.z *= -atten;
 				}
-				else if (p.position.z > mPs.upperBound.z - eps)
+				else if (p.position.z > mPs.containerUpper.z - eps)
 				{
-					p.position.z = mPs.upperBound.z - eps;
+					p.position.z = mPs.containerUpper.z - eps;
 					p.velocity.z *= -atten;
 				}
 

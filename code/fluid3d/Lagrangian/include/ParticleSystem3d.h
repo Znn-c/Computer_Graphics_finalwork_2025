@@ -51,6 +51,8 @@ namespace FluidSimulation
             std::vector<particle3d> particles;  // 粒子数组
 
             // 容器参数
+            glm::vec3 containerLower = glm::vec3(0.0f);      // 可视容器下边界
+            glm::vec3 containerUpper = glm::vec3(0.0f);      // 可视容器上边界
             glm::vec3 lowerBound = glm::vec3(FLT_MAX);     // 容器下边界
             glm::vec3 upperBound = glm::vec3(-FLT_MAX);    // 容器上边界
             glm::vec3 containerCenter = glm::vec3(0.0f);   // 容器中心

@@ -1,6 +1,6 @@
 /**
- * SceneView.cpp: 场景视图实现文件
- * 实现渲染结果显示和鼠标交互
+ * SceneView.cpp: 锟斤拷锟斤拷锟斤拷图实锟斤拷锟侥硷拷
+ * 实锟斤拷锟斤拷染锟斤拷锟斤拷锟绞撅拷锟斤拷锟疥交锟斤拷
  */
 
 #include "SceneView.h"
@@ -8,25 +8,25 @@
 namespace FluidSimulation {
 
 	/**
-	 * 默认构造函数
+	 * 默锟较癸拷锟届函锟斤拷
 	 */
 	SceneView::SceneView() {
 
 	}
 
 	/**
-	 * 构造函数
-	 * @param window GLFW窗口
+	 * 锟斤拷锟届函锟斤拷
+	 * @param window GLFW锟斤拷锟斤拷
 	 */
 	SceneView::SceneView(GLFWwindow* window) {
 		this->window = window;
         glfwMakeContextCurrent(window);
-        texture = -1;   // 初始化为-1，表示无纹理
+        texture = -1;   // 锟斤拷始锟斤拷为-1锟斤拷锟斤拷示锟斤拷锟斤拷锟斤拷
 	}
 
 	/**
-	 * 显示场景视图
-	 * 绘制渲染纹理并处理鼠标交互（旋转、移动、缩放相机）
+	 * 锟斤拷示锟斤拷锟斤拷锟斤拷图
+	 * 锟斤拷锟斤拷锟斤拷染锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷杲伙拷锟斤拷锟斤拷锟阶拷锟斤拷贫锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷
 	 */
 	void SceneView::display() {
 

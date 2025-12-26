@@ -17,33 +17,33 @@ namespace FluidSimulation
 {
     namespace Lagrangian3d
     {
-        // À­¸ñÀÊÈÕ·¨Á÷ÌåäÖÈ¾Æ÷Àà
-        // ¸ºÔð½«ÈýÎ¬Á£×ÓÏµÍ³¿ÉÊÓ»¯
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î¬ï¿½ï¿½ï¿½ï¿½ÏµÍ³ï¿½ï¿½ï¿½Ó»ï¿½
         class Renderer
         {
         public:
             Renderer(){};
 
-            void init();                          // ³õÊ¼»¯äÖÈ¾Æ÷
-            GLuint getRenderedTexture();          // »ñÈ¡äÖÈ¾½á¹ûµÄÎÆÀíID
-            void draw(ParticleSystem3d &ps);      // »æÖÆÁ£×ÓÏµÍ³
+            void init();                          // ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½È¾ï¿½ï¿½
+            GLuint getRenderedTexture();          // ï¿½ï¿½È¡ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
+            void draw(ParticleSystem3d &ps);      // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³
 
         private:
-            void MakeVertexArrays();              // ´´½¨¶¥µãÊý×é
+            void MakeVertexArrays();              // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
         private:
-            // ×ÅÉ«Æ÷ºÍÈÝÆ÷
-            Glb::Shader *shader = nullptr;        // ×ÅÉ«Æ÷³ÌÐò
-            Glb::Container *container = nullptr;   // ÈÝÆ÷¶ÔÏó
+            // ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            Glb::Shader *shader = nullptr;        // ï¿½ï¿½É«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            Glb::Container *container = nullptr;   // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-            // OpenGLäÖÈ¾¶ÔÏó
-            GLuint FBO = 0;                       // Ö¡»º³å¶ÔÏó
-            GLuint RBO = 0;                       // äÖÈ¾»º³å¶ÔÏó
-            GLuint VAO = 0;                       // ¶¥µãÊý×é¶ÔÏó
-            GLuint VBO = 0;                       // ¶¥µã»º³å¶ÔÏó
-            GLuint textureID = 0;                 // äÖÈ¾ÎÆÀíID
+            // OpenGLï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½
+            GLuint FBO = 0;                       // Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            GLuint RBO = 0;                       // ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            GLuint VAO = 0;                       // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            GLuint VBO = 0;                       // ï¿½ï¿½ï¿½ã»ºï¿½ï¿½ï¿½ï¿½ï¿½
+            GLuint textureID = 0;                 // ï¿½ï¿½È¾ï¿½ï¿½ï¿½ï¿½ID
 
-            int32_t particleNum = 0;              // Á£×ÓÊýÁ¿
+            int32_t particleNum = 0;              // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         };
     }
 }
